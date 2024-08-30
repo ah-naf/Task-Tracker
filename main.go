@@ -11,6 +11,7 @@ func handleCommand(args []string) {
 	case "add":
 		HandleAdd(args[1:])
 	case "update":
+		HandleUpdate(args[1:])
 	case "delete":
 	case "list":
 	case "start":
