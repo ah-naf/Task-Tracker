@@ -16,8 +16,8 @@ func handleCommand(args []string) {
 		HandleDelete(args[1:])
 	case "list":
 		HandleList(args[1:])
-	case "start":
-	case "complete":
+	case "change-status":
+		HandleChangeStauts(args[1:])
 	default:
 		log.Fatalf("Error: Unknown command '%s'. Supported commands: add, update, delete, list, start, complete", command)
 	}

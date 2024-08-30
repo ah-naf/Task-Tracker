@@ -187,6 +187,42 @@ func HandleList(args []string) {
 	}
 }
 
+func HandleChangeStauts(args []string) {
+	if len(args) < 2 {
+        log.Fatalf("Error: Missing ID and Status for the task to be changed. ID and Status is required.")
+    }
+	idStr := args[0]
+	changedStatus := args[1]
+	if changedStatus!= "done" && changedStatus!= "in-progress" && changedStatus!= "not-started" {
+        log.Fatalf("Error: Invalid status '%s'. Supported statuses: done, in-progress, not-started.", changedStatus)
+    }
+
+	id, err := strconv.Atoi(idStr)
+    if err!= nil || id <= 0 {
+        log.Fatalf("Error: Invalid ID '%s'. ID should be a positive integer.", idStr)
+    }
+
+	file, _ := CreateOpenFile("data.json")
+    defer file.Close()
+
+    tasks := ReadTaskFromFile(file)
+
+	updated := false
+	for i, task := range tasks {
+		if task.ID == id {
+			tasks[i].Status = changedStatus
+			updated = true
+			break
+		}
+	}
+	if !updated {
+		log.Fatalf("Error: No task found with ID %d.", id)
+	}
+
+	WriteTaskToFile(file, tasks)
+	log.Println("Status updated successfully")
+}
+
 func PrintSingleTask(task Task) {
 	log.Printf("ID: %d, Title: %s, Description: %s, Status: %s, Created At: %s, Updated At: %s\n",
 		task.ID, task.Title, task.Description, task.Status, task.CreatedAt.Format(time.RFC3339), task.UpdatedAt.Format(time.RFC3339))
