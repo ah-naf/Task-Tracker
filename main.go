@@ -13,6 +13,7 @@ func handleCommand(args []string) {
 	case "update":
 		HandleUpdate(args[1:])
 	case "delete":
+		HandleDelete(args[1:])
 	case "list":
 	case "start":
 	case "complete":

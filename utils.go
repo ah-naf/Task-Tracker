@@ -110,3 +110,39 @@ func HandleUpdate(args []string) {
 
 	log.Println("Task updated successfully.")
 }
+
+func HandleDelete(args []string) {
+	if len(args) < 1 {
+        log.Fatalf("Error: Missing ID for the task to be deleted. ID is required.")
+    }
+    idStr := args[0]
+
+    id, err := strconv.Atoi(idStr)
+    if err!= nil || id <= 0 {
+        log.Fatalf("Error: Invalid ID '%s'. ID should be a positive integer.", idStr)
+    }
+
+    file, _ := CreateOpenFile("data.json")
+    defer file.Close()
+
+    tasks := ReadTaskFromFile(file)
+
+    deleted := false
+	tempID := id
+    for i, task := range tasks {
+        if task.ID == id {
+            tasks = append(tasks[:i], tasks[i+1:]...)
+            deleted = true
+        } else if deleted {
+			tasks[i-1].ID = tempID
+			tempID++
+		}
+    }
+
+    if!deleted {
+        log.Fatalf("Error: No task found with ID %d.", id)
+    }
+
+    WriteTaskToFile(file, tasks)
+	log.Println("Task deleted successfully.")
+}
