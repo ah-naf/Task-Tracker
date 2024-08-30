@@ -19,7 +19,7 @@ func handleCommand(args []string) {
 	case "change-status":
 		HandleChangeStauts(args[1:])
 	default:
-		log.Fatalf("Error: Unknown command '%s'. Supported commands: add, update, delete, list, start, complete", command)
+		log.Fatalf("Error: Unknown command '%s'. Supported commands: add, update, delete, list, change-status", command)
 	}
 }
 
@@ -27,7 +27,7 @@ func main()  {
 	
 	args := os.Args[1:]
 	if len(args) == 0 {
-		log.Fatal(`Error: Missing command. Please provide a command (e.g., add, update, delete, mark-in-progress, mark-done, list).
+		log.Fatal(`Error: Missing command. Please provide a command (e.g., add, update, delete, list, change-status).
 Usage: task-tracker <command> [options]`)
 	}
 	
