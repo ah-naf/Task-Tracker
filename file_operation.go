@@ -4,18 +4,13 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 )
 
-/*
-	This file contains the code that is needed to
-	Create/Open a file, Reading/Writing in a file
-*/
-
+// CreateOpenFile opens or creates the specified file and returns the file pointer
 func CreateOpenFile(path string) (*os.File, error) {
 	// Get the full path of the currently executing file (executable)
 	executable, err := os.Executable()
@@ -33,26 +28,27 @@ func CreateOpenFile(path string) (*os.File, error) {
 	return file, nil
 }
 
-
+// ReadTaskFromFile reads and unmarshals tasks from the specified file
 func ReadTaskFromFile(file *os.File) []Task {
 	scanner := bufio.NewScanner(file)
 	buf := bytes.Buffer{}
 	for scanner.Scan() {
-		fmt.Fprintln(&buf, scanner.Text())
+		buf.Write(scanner.Bytes())
 	}
-	if err := scanner.Err(); err!= nil {
-        log.Fatalln("Error reading file:", err)
-    }
+	if err := scanner.Err(); err != nil {
+		log.Fatalln("Error reading file:", err)
+	}
 
-	var task []Task
-	if err := json.Unmarshal(buf.Bytes(), &task); err != nil {
+	var tasks []Task
+	if err := json.Unmarshal(buf.Bytes(), &tasks); err != nil {
 		// log.Println("Error unmarshalling JSON:", err)
 		return []Task{}
 	}
 
-	return task
+	return tasks
 }
 
+// WriteTaskToFile encodes and writes the tasks to the specified file
 func WriteTaskToFile(file *os.File, tasks []Task) {
 	// Reset the file offset to the beginning for writing
 	if _, err := file.Seek(0, io.SeekStart); err != nil {

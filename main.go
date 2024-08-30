@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// handleCommand routes the provided command to the appropriate handler function
 func handleCommand(args []string) {
 	command := args[0]
 	switch command {
@@ -23,13 +24,11 @@ func handleCommand(args []string) {
 	}
 }
 
-func main()  {
-	
+func main() {
 	args := os.Args[1:]
 	if len(args) == 0 {
 		log.Fatal(`Error: Missing command. Please provide a command (e.g., add, update, delete, list, change-status).
 Usage: task-tracker <command> [options]`)
 	}
-	
 	handleCommand(args)
 }
