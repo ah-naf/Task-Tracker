@@ -35,7 +35,7 @@ func HandleAdd(args []string) {
 		ID:          len(tasks) + 1,
 		Title: 		 title,
         Description: desc,
-        Status:      "in progress",
+        Status:      "not-started",
         CreatedAt:   time.Now(),
         UpdatedAt:   time.Now(),
 	}
@@ -145,4 +145,49 @@ func HandleDelete(args []string) {
 
     WriteTaskToFile(file, tasks)
 	log.Println("Task deleted successfully.")
+}
+
+func HandleList(args []string) {
+	file, _ := CreateOpenFile("data.json")
+    defer file.Close()
+	tasks := ReadTaskFromFile(file)
+
+	if len(args) == 0 {
+		// List all tasks
+        for _, task := range tasks {
+            PrintSingleTask(task)
+        }
+        return
+	} else {
+		option := args[0]
+		// option can be done, in progress, not-started
+		switch option {
+        case "done":
+            for _, task := range tasks {
+                if task.Status == "done" {
+                    PrintSingleTask(task)
+                }
+            }
+            return
+        case "in-progress":
+            for _, task := range tasks {
+                if task.Status == "in-progress" {
+					PrintSingleTask(task)
+				}
+			}
+		case "not-started":
+            for _, task := range tasks {
+                if task.Status == "not-started" {
+                    PrintSingleTask(task)
+                }
+            }
+		default:
+			log.Fatalf("Error: Invalid option '%s'. Supported options: done, in-progress, not-started.", option)
+		}
+	}
+}
+
+func PrintSingleTask(task Task) {
+	log.Printf("ID: %d, Title: %s, Description: %s, Status: %s, Created At: %s, Updated At: %s\n",
+		task.ID, task.Title, task.Description, task.Status, task.CreatedAt.Format(time.RFC3339), task.UpdatedAt.Format(time.RFC3339))
 }
